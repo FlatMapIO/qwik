@@ -190,7 +190,7 @@ export const routeLoaderQrl = ((
   function loader() {
     return useContext(RouteStateContext, (state) => {
       if (!(id in state)) {
-        throw new Error(`routeLoader$ "${loaderQrl.getSymbol()}" was invoked in a route where the it was not declared.
+        throw new Error(`routeLoader$ "${loaderQrl.getSymbol()}" was invoked in a route where it was not declared.
     This is because the routeLoader$ was not exported in a 'layout.tsx' or 'index.tsx' file of the existing route.
     For more information check: https://qwik.builder.io/qwikcity/route-loader/`);
       }
@@ -234,21 +234,23 @@ export const validator$: ValidatorConstructor = /*#__PURE__*/ implicit$FirstArg(
  * @public
  */
 export const zodQrl = ((
-  qrl: QRL<z.ZodRawShape | z.Schema | ((z: typeof import('zod').z) => z.ZodRawShape)>
+  qrl: QRL<
+    z.ZodRawShape | z.Schema | ((z: typeof import('zod').z, ev: RequestEvent) => z.ZodRawShape)
+  >
 ): DataValidator => {
   if (isServer) {
-    const schema: Promise<z.Schema> = qrl.resolve().then((obj) => {
-      if (typeof obj === 'function') {
-        obj = obj(z);
-      }
-      if (obj instanceof z.Schema) {
-        return obj;
-      } else {
-        return z.object(obj);
-      }
-    });
     return {
       async validate(ev, inputData) {
+        const schema: Promise<z.Schema> = qrl.resolve().then((obj) => {
+          if (typeof obj === 'function') {
+            obj = obj(z, ev);
+          }
+          if (obj instanceof z.Schema) {
+            return obj;
+          } else {
+            return z.object(obj);
+          }
+        });
         const data = inputData ?? (await ev.parseBody());
         const result = await (await schema).safeParseAsync(data);
         if (result.success) {
