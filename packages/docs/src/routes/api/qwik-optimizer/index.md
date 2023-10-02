@@ -267,10 +267,11 @@ export interface Optimizer
 export interface OptimizerOptions
 ```
 
-| Property      | Modifiers | Type                                | Description  |
-| ------------- | --------- | ----------------------------------- | ------------ |
-| [binding?](#) |           | any                                 | _(Optional)_ |
-| [sys?](#)     |           | [OptimizerSystem](#optimizersystem) | _(Optional)_ |
+| Property                    | Modifiers | Type                                | Description  |
+| --------------------------- | --------- | ----------------------------------- | ------------ |
+| [binding?](#)               |           | any                                 | _(Optional)_ |
+| [inlineStylesUpToBytes?](#) |           | number                              | _(Optional)_ |
+| [sys?](#)                   |           | [OptimizerSystem](#optimizersystem) | _(Optional)_ |
 
 [Edit this section](https://github.com/BuilderIO/qwik/tree/main/packages/qwik/src/optimizer/src/types.ts)
 
@@ -395,7 +396,7 @@ export interface QwikManifest
 
 ```typescript
 export declare function qwikRollup(
-  qwikRollupOpts?: QwikRollupPluginOptions
+  qwikRollupOpts?: QwikRollupPluginOptions,
 ): any;
 ```
 
@@ -630,7 +631,7 @@ export type SymbolMapper = Record<
 ```typescript
 export type SymbolMapperFn = (
   symbolName: string,
-  mapper: SymbolMapper | undefined
+  mapper: SymbolMapper | undefined,
 ) => readonly [symbol: string, chunk: string] | undefined;
 ```
 
@@ -644,6 +645,7 @@ export type SymbolMapperFn = (
 export type SystemEnvironment =
   | "node"
   | "deno"
+  | "bun"
   | "webworker"
   | "browsermain"
   | "unknown";

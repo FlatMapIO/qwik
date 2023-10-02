@@ -78,8 +78,9 @@ export interface BuildServerPlugin {
 }
 
 export interface ParsedPathname {
-  pattern: RegExp;
-  paramNames: string[];
+  routeName: string;
+  pattern: RegExp; // TODO(misko): duplicate information from `routeName` refactor to normalize
+  paramNames: string[]; // TODO(misko): duplicate information from `routeName` refactor to normalizehttps://github.com/BuilderIO/qwik/pull/4954
   segments: PathnameSegment[];
 }
 
@@ -119,6 +120,14 @@ export interface ParsedMenuItem {
 /**
  * @public
  */
+export interface RewriteRouteOption {
+  prefix?: string;
+  paths: Record<string, string>;
+}
+
+/**
+ * @public
+ */
 export interface PluginOptions {
   /**
    * Directory of the `routes`. Defaults to `src/routes`.
@@ -151,6 +160,10 @@ export interface PluginOptions {
    * The platform object which can be used to mock the Cloudflare bindings.
    */
   platform?: Record<string, unknown>;
+  /**
+   * Configuration to rewrite url paths
+   */
+  rewriteRoutes?: RewriteRouteOption[];
 }
 
 export interface MdxPlugins {
